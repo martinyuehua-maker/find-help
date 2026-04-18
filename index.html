@@ -692,9 +692,11 @@ function shouldHide(o) {
   // 1. Name-based: non-charity organizations (social clubs, ancestral, alumni)
   const hideNames = ['祭祀','公業','宗祠','宗親會','同鄉會','校友會','同學會','互助會','祠堂','神明會','獅子會','扶輪社','青商會','同濟會','聯誼會'];
   if (hideNames.some(w => o.n.includes(w))) return true;
-  // 2. Must have at least one contact method to be useful
+  // 精選團體（ORG_DETAILS 中有定義）一律保留，即使暫無聯絡資訊
+  const isFeatured = findOrgDetail(o.n) !== null;
+  // 2. Must have at least one contact method OR be featured
   const hasContact = o.phone || o.email || o.website || o.fb || o.line;
-  if (!hasContact) return true;
+  if (!hasContact && !isFeatured) return true;
   // 3. Must have at least one emergency category
   if (!Array.isArray(o.c) || !o.c.some(c => EMERGENCY_CATS.has(c))) return true;
   return false;
