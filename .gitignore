@@ -1,0 +1,25 @@
+# 爬蟲中間檔（不需要上傳）
+scraper_checkpoint.json
+scrape_log.txt
+test_igiving.json
+test_page.html
+igiving_501_1100.json
+igiving_contacts.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 編輯器
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# 大型原始資料（爬蟲產出，可重新生成）
+npo_fia.csv
+mol_foundations.csv
+
+# 爬蟲腳本（不需公開）
+scrape_contacts.py

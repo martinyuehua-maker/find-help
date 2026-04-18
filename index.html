@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>找幫助 — 台灣公益團體媒合平台</title>
+<meta name="description" content="免費、匿名查詢台灣公益團體，快速找到適合你的幫助資源">
+<style>
+:root {
+  --pri: #2563eb;
+  --pri-light: #dbeafe;
+  --pri-dark: #1e40af;
+  --green: #059669;
+  --green-light: #d1fae5;
+  --orange: #d97706;
+  --orange-light: #fef3c7;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --purple: #7c3aed;
+  --purple-light: #ede9fe;
+  --g50: #f9fafb; --g100: #f3f4f6; --g200: #e5e7eb; --g300: #d1d5db;
+  --g400: #9ca3af; --g500: #6b7280; --g600: #4b5563; --g700: #374151; --g900: #111827;
+  --radius: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  background: var(--g50); color: var(--g900); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; }
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+  color: white; padding: 20px 16px 36px; text-align: center;
+}
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.15); padding: 4px 14px;
+  border-radius: 20px; font-size: 12px; margin-bottom: 12px; backdrop-filter: blur(4px);
+}
+.header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; letter-spacing: 1px; }
+.header .sub { opacity: 0.85; font-size: 13px; }
+
+/* ===== SEARCH ===== */
+.search-wrap {
+  max-width: 580px; margin: -22px auto 0; padding: 0 16px; position: relative; z-index: 10;
+}
+.search-box {
+  display: flex; align-items: center; gap: 10px;
+  background: white; border: 2px solid var(--g200); border-radius: var(--radius);
+  padding: 4px 6px 4px 16px; box-shadow: var(--shadow-lg); transition: border-color .2s;
+}
+.search-box:focus-within { border-color: var(--pri); }
+.search-box svg { flex-shrink: 0; color: var(--g400); }
+.search-box input {
+  flex: 1; border: none; outline: none; font-size: 15px; padding: 10px 0;
+  background: transparent; min-width: 0;
+}
+.search-box input::placeholder { color: var(--g400); }
+.search-clear {
+  display: none; background: var(--g100); border: none; width: 28px; height: 28px;
+  border-radius: 50%; cursor: pointer; font-size: 14px; color: var(--g500);
+  flex-shrink: 0;
+}
+.search-clear.show { display: flex; align-items: center; justify-content: center; }
+
+/* ===== EMERGENCY BAR ===== */
+.emergency-bar {
+  max-width: 580px; margin: 10px auto 0; padding: 0 16px;
+}
+.emergency-box {
+  background: var(--red-light); border: 1px solid #fca5a5; border-radius: 10px;
+  padding: 10px 14px; font-size: 12px; color: #991b1b;
+  display: none; gap: 8px; align-items: flex-start;
+}
+.emergency-box.show { display: flex; }
+.emergency-box a { color: #991b1b; font-weight: 700; text-decoration: underline; }
+
+/* ===== PRIVACY ===== */
+.privacy {
+  max-width: 580px; margin: 8px auto 0; padding: 0 16px;
+}
+.privacy-box {
+  background: var(--green-light); border: 1px solid #6ee7b7; border-radius: 10px;
+  padding: 8px 14px; font-size: 12px; color: #065f46;
+  display: flex; gap: 6px; align-items: center;
+}
+
+/* ===== TABS ===== */
+.tabs {
+  max-width: 580px; margin: 14px auto 0; padding: 0 16px;
+  display: flex; gap: 6px;
+}
+.tab {
+  flex: 1; padding: 11px 8px; border: 2px solid var(--g200); border-radius: 10px;
+  background: white; cursor: pointer; text-align: center; font-size: 14px;
+  font-weight: 500; transition: all .2s; color: var(--g600);
+}
+.tab:hover { border-color: var(--g300); }
+.tab.active { border-color: var(--pri); background: var(--pri-light); color: var(--pri); font-weight: 600; }
+
+/* ===== PAGE SECTIONS ===== */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ===== QUESTIONNAIRE ===== */
+.q-wrap { max-width: 580px; margin: 16px auto 0; padding: 0 16px; }
+.q-card {
+  background: white; border-radius: var(--radius); padding: 16px;
+  box-shadow: var(--shadow); border: 1px solid var(--g200);
+}
+.q-card-body { max-height: min(280px, 40vh); overflow-y: auto; overscroll-behavior: contain; }
+.q-step { font-size: 12px; color: var(--pri); font-weight: 600; margin-bottom: 4px; }
+.q-card h2 { font-size: 18px; margin-bottom: 6px; }
+.q-card .q-sub { font-size: 13px; color: var(--g500); margin-bottom: 16px; }
+.q-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.q-opt {
+  padding: 10px 16px; border: 2px solid var(--g200); border-radius: 10px;
+  background: white; cursor: pointer; font-size: 14px; transition: all .15s;
+  display: flex; align-items: center; gap: 8px; user-select: none;
+}
+.q-opt:hover { border-color: var(--pri); background: var(--pri-light); }
+.q-opt.sel { border-color: var(--pri); background: var(--pri-light); color: var(--pri); font-weight: 600; }
+.q-opt .ico { font-size: 20px; }
+.q-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.q-opt { font-size: 12px; padding: 8px 10px; }
+.q-opt .ico { font-size: 16px; }
+.q-top-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 6px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--g200);
+}
+.q-top-nav .q-step { margin: 0; white-space: nowrap; }
+.q-nav-btn {
+  padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--g200); background: white; color: var(--g600);
+  transition: all .15s; white-space: nowrap;
+}
+.q-nav-btn:hover { border-color: var(--g300); }
+.q-nav-btn.primary {
+  background: var(--pri); color: white; border-color: var(--pri);
+}
+.q-nav-btn.primary:hover { background: var(--pri-dark); }
+.q-nav-btn:disabled { opacity: .3; cursor: default; }
+.q-progress { display: flex; gap: 4px; margin-top: 16px; }
+.q-dot {
+  flex: 1; height: 4px; border-radius: 2px; background: var(--g200); transition: background .3s;
+}
+.q-dot.done { background: var(--pri); }
+.q-dot.current { background: var(--pri); opacity: .6; }
+
+/* Step summary */
+.q-summary { margin-top: 12px; }
+.q-summary-item {
+  display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px;
+  background: var(--g50); border-radius: 8px; margin-bottom: 6px; font-size: 13px;
+}
+.q-summary-step {
+  background: var(--pri); color: white; border-radius: 50%; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center; font-size: 11px;
+  font-weight: 700; flex-shrink: 0;
+}
+.q-summary-step.done { background: var(--green); }
+.q-summary-step.current { background: var(--pri); }
+.q-summary-step.pending { background: var(--g300); }
+.q-summary-label { color: var(--g500); font-size: 12px; }
+.q-summary-value { color: var(--g900); font-weight: 500; }
+
+/* ===== SORT ===== */
+.sort-sel {
+  padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--g200);
+  font-size: 12px; color: var(--g600); background: white; cursor: pointer;
+  outline: none; min-width: 100px;
+}
+.sort-sel:focus { border-color: var(--pri); }
+
+/* ===== FILTERS ===== */
+.filters-wrap { max-width: 800px; margin: 14px auto 0; padding: 0 16px; }
+.filter-scroll {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.filter-scroll::-webkit-scrollbar { display: none; }
+.f-chip {
+  padding: 7px 14px; border: 1.5px solid var(--g200); border-radius: 20px;
+  background: white; cursor: pointer; font-size: 13px; transition: all .15s;
+  white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; gap: 4px;
+}
+.f-chip:hover { border-color: var(--pri); }
+.f-chip.active { background: var(--pri); color: white; border-color: var(--pri); }
+.f-chip .cnt { font-size: 11px; opacity: .7; }
+.filter-row {
+  display: flex; gap: 8px; margin-top: 8px; align-items: center; flex-wrap: wrap;
+}
+.city-sel {
+  padding: 7px 12px; border: 1.5px solid var(--g200); border-radius: 10px;
+  font-size: 13px; background: white; flex-shrink: 0;
+}
+.result-count { font-size: 13px; color: var(--g500); }
+
+/* ===== ORG CARDS ===== */
+.cards-wrap { max-width: 800px; margin: 12px auto; padding: 0 16px 24px; }
+.card {
+  background: white; border-radius: var(--radius); padding: 18px;
+  margin-bottom: 10px; border: 1px solid var(--g200); transition: all .2s; cursor: pointer;
+}
+.card:hover { box-shadow: var(--shadow-lg); border-color: var(--g300); transform: translateY(-1px); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.card-name { font-size: 15px; font-weight: 600; flex: 1; line-height: 1.4; }
+.card-badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  background: var(--g100); color: var(--g500); white-space: nowrap; margin-left: 8px; flex-shrink: 0;
+}
+.card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.tag {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px;
+  background: var(--pri-light); color: var(--pri);
+}
+.card-desc {
+  font-size: 13px; color: var(--g600); line-height: 1.7;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-meta {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;
+  font-size: 12px; color: var(--g500);
+}
+.meta-item { display: flex; align-items: center; gap: 3px; }
+.card-actions {
+  display: flex; gap: 6px; margin-top: 12px; border-top: 1px solid var(--g100); padding-top: 12px;
+}
+.card-act {
+  flex: 1; padding: 8px 4px; border: 1.5px solid var(--g200); border-radius: 8px;
+  background: white; cursor: pointer; font-size: 12px; text-align: center;
+  transition: all .15s; text-decoration: none; color: var(--g700);
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.card-act:hover { border-color: var(--pri); color: var(--pri); }
+.card-act.pri { background: var(--pri); color: white; border-color: var(--pri); }
+.card-act.pri:hover { background: var(--pri-dark); }
+.card-act.grn { background: var(--green); color: white; border-color: var(--green); }
+
+/* ===== DETAIL MODAL ===== */
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 100; justify-content: center; align-items: flex-end;
+}
+.overlay.show { display: flex; }
+.modal {
+  background: white; border-radius: 18px 18px 0 0; width: 100%; max-width: 580px;
+  max-height: 88vh; overflow-y: auto; padding: 20px 20px 32px;
+  animation: slideUp .25s ease; overscroll-behavior: contain;
+}
+@keyframes slideUp { from { transform: translateY(100%); } }
+@media (min-width: 768px) {
+  .modal { border-radius: 18px; margin: auto; max-height: 85vh; }
+  .overlay { align-items: center; }
+}
+.modal-handle {
+  width: 36px; height: 4px; background: var(--g300); border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.modal-close {
+  position: absolute; right: 16px; top: 16px;
+  background: var(--g100); border: none; width: 32px; height: 32px;
+  border-radius: 50%; cursor: pointer; font-size: 16px; color: var(--g500);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-head { position: relative; }
+.modal-badge { font-size: 12px; color: var(--g500); margin-bottom: 4px; }
+.modal h2 { font-size: 20px; font-weight: 700; margin-bottom: 12px; padding-right: 40px; }
+.modal-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+.m-section { margin-bottom: 18px; }
+.m-section h3 {
+  font-size: 12px; font-weight: 600; color: var(--g400);
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
+}
+.m-section p, .m-section div { font-size: 14px; color: var(--g700); line-height: 1.8; }
+.m-list {
+  list-style: none; padding: 0; margin: 0;
+}
+.m-list li {
+  font-size: 14px; color: var(--g700); line-height: 1.6; padding: 4px 0 4px 20px;
+  position: relative; border-bottom: 1px solid var(--g100);
+}
+.m-list li:last-child { border-bottom: none; }
+.m-list li::before {
+  content: ''; position: absolute; left: 4px; top: 12px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--pri); opacity: .6;
+}
+.m-list a { color: var(--pri); text-decoration: none; }
+.m-list a:hover { text-decoration: underline; }
+.m-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px;
+}
+.m-act {
+  padding: 12px 8px; border: none; border-radius: 10px; font-size: 13px;
+  font-weight: 600; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 6px; transition: opacity .15s; text-decoration: none;
+}
+.m-act:hover { opacity: .85; }
+.m-act.map { background: var(--green); color: white; }
+.m-act.search { background: var(--pri); color: white; }
+.m-act.line { background: #06c755; color: white; }
+.m-act.share { background: var(--g100); color: var(--g700); }
+.m-act.fb { background: #1877f2; color: white; }
+
+.m-warn {
+  margin-top: 16px; padding: 12px; background: var(--g50); border-radius: 10px;
+  font-size: 12px; color: var(--g500); line-height: 1.7;
+}
+.hotline-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px;
+}
+.hotline {
+  display: flex; align-items: center; gap: 6px; padding: 8px 10px;
+  background: var(--g50); border-radius: 8px; font-size: 12px; text-decoration: none; color: var(--g700);
+}
+.hotline:hover { background: var(--g100); }
+.hotline strong { color: var(--red); }
+
+/* ===== RECOMMENDATION RESULT ===== */
+.rec-header {
+  max-width: 580px; margin: 16px auto 0; padding: 0 16px;
+}
+.rec-box {
+  background: var(--purple-light); border: 1px solid #c4b5fd; border-radius: var(--radius);
+  padding: 16px; text-align: center;
+}
+.rec-box h3 { font-size: 16px; color: var(--purple); margin-bottom: 4px; }
+.rec-box p { font-size: 13px; color: #5b21b6; }
+.rec-reset {
+  margin-top: 10px; padding: 6px 16px; border: 1.5px solid #c4b5fd; border-radius: 8px;
+  background: white; cursor: pointer; font-size: 13px; color: var(--purple);
+}
+
+/* ===== FAVORITES / CART ===== */
+.card-top-actions { display: flex; gap: 2px; flex-shrink: 0; margin-left: 6px; }
+.fav-btn {
+  width: 32px; height: 32px; border: none; background: none; cursor: pointer;
+  font-size: 20px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: transform .15s; border-radius: 6px;
+}
+.fav-btn:hover { transform: scale(1.2); background: var(--g50); }
+.fav-count {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 50;
+  background: var(--pri); color: white; border-radius: 50px;
+  padding: 12px 24px; font-size: 14px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(37,99,235,0.4); cursor: pointer; display: none;
+  align-items: center; gap: 8px; transition: all .2s;
+  max-width: 90vw;
+}
+.fav-count:hover { box-shadow: 0 6px 28px rgba(37,99,235,0.5); }
+.fav-count.show { display: flex; }
+/* Urgency tag on cards */
+.urgency-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  font-weight: 600; white-space: nowrap; margin-left: 4px;
+}
+.urgency-tag.instant { background: #dcfce7; color: #166534; }
+.urgency-tag.sos { background: #fee2e2; color: #991b1b; }
+/* Contact dropdown on card */
+.contact-wrap { position: relative; flex: 1; }
+.contact-menu {
+  display: none; position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: white; border: 1.5px solid var(--g200); border-radius: 10px;
+  box-shadow: var(--shadow-lg); padding: 6px; min-width: 190px; z-index: 20;
+}
+.contact-menu.show { display: block; }
+.contact-menu a, .contact-menu span {
+  display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+  font-size: 13px; text-decoration: none; color: var(--g700);
+  border-radius: 6px; cursor: pointer; white-space: nowrap;
+}
+.contact-menu a:hover, .contact-menu span:hover { background: var(--g50); }
+.contact-menu .cm-line { color: #06c755; }
+.contact-menu .cm-fb { color: #1877f2; }
+.contact-menu .cm-phone { color: #059669; }
+.contact-menu .cm-email { color: #d97706; }
+.contact-menu .cm-none { color: var(--g400); font-size: 12px; }
+
+/* ===== HINT TEXT ===== */
+.q-hint {
+  color: var(--red); font-size: 13px; margin-top: 8px;
+  display: none; animation: fadeIn .2s;
+}
+.q-hint.show { display: block; }
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+/* ===== FIX SCROLL ===== */
+html { overflow-y: scroll !important; overflow-x: hidden; }
+body { overflow-y: visible !important; min-height: 100vh; }
+
+/* ===== LOAD MORE ===== */
+.load-more {
+  text-align: center; padding: 8px 0 24px;
+}
+.load-btn {
+  padding: 12px 32px; border: 2px solid var(--g200); border-radius: 10px;
+  background: white; cursor: pointer; font-size: 14px; color: var(--g600);
+  transition: all .15s;
+}
+.load-btn:hover { border-color: var(--pri); color: var(--pri); }
+
+/* ===== EMPTY STATE ===== */
+.empty {
+  text-align: center; padding: 48px 16px; color: var(--g400);
+}
+.empty .ico { font-size: 48px; margin-bottom: 12px; }
+.empty p { font-size: 14px; }
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center; padding: 24px 16px 40px; font-size: 11px;
+  color: var(--g400); line-height: 2;
+  border-top: 1px solid var(--g200); margin-top: 16px;
+}
+
+/* ===== CART PANEL ===== */
+.fav-panel {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 90;
+  justify-content: center; align-items: flex-end;
+}
+.fav-panel.show { display: flex; }
+.fav-sheet {
+  background: white; border-radius: 18px 18px 0 0; width: 100%; max-width: 580px;
+  max-height: 85vh; overflow-y: auto; padding: 20px 20px 32px;
+}
+@media (min-width: 768px) {
+  .fav-sheet { border-radius: 18px; margin: auto; max-height: 85vh; }
+  .fav-panel { align-items: center; }
+}
+.fav-sheet h2 { font-size: 18px; margin-bottom: 6px; }
+.cart-subtitle { font-size: 13px; color: var(--g500); margin-bottom: 16px; }
+.cart-item {
+  display: flex; align-items: flex-start; gap: 10px; padding: 12px;
+  background: var(--g50); border-radius: 10px; margin-bottom: 8px;
+}
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.cart-item-meta { font-size: 12px; color: var(--g500); }
+.cart-item-contact { font-size: 12px; color: var(--pri); margin-top: 2px; }
+.cart-remove {
+  background: none; border: none; cursor: pointer; font-size: 16px;
+  color: var(--g400); padding: 4px; flex-shrink: 0;
+}
+.cart-remove:hover { color: var(--red); }
+.cart-actions {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 16px;
+  border-top: 2px solid var(--g200); padding-top: 16px;
+}
+.cart-actions-title {
+  font-size: 13px; font-weight: 600; color: var(--g600); margin-bottom: 4px;
+}
+.cart-export-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cart-btn {
+  padding: 12px 8px; border: 2px solid var(--g200); border-radius: 10px;
+  background: white; cursor: pointer; font-size: 13px; font-weight: 600;
+  text-align: center; transition: all .15s; color: var(--g700);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.cart-btn:hover { border-color: var(--pri); color: var(--pri); }
+.cart-btn.pri { background: var(--pri); color: white; border-color: var(--pri); }
+.cart-btn.pri:hover { background: var(--pri-dark); }
+.cart-btn.line-btn { background: #06c755; color: white; border-color: #06c755; }
+.cart-btn.line-btn:hover { background: #05a847; }
+.cart-clear {
+  padding: 10px; border: none; background: none; cursor: pointer;
+  font-size: 13px; color: var(--g400); text-align: center; margin-top: 4px;
+}
+.cart-clear:hover { color: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">&#128154; 心轉基金會 公益專案</div>
+  <h1>找幫助</h1>
+  <div class="sub">台灣公益團體媒合平台 &mdash; 免費、匿名、找到對的資源</div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="輸入需求或團體名稱，例如：經濟困難、心理諮商、伊甸...">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">&#10005;</button>
+  </div>
+</div>
+
+<!-- EMERGENCY -->
+<div class="emergency-bar">
+  <div class="emergency-box" id="emergencyBox">
+    <span>&#9888;&#65039;</span>
+    <div>
+      如果你正處於<b>緊急危險</b>，請立即撥打：
+      <a href="tel:110">110 警察</a> |
+      <a href="tel:119">119 消防</a> |
+      <a href="tel:113">113 家暴保護</a> |
+      <a href="tel:1925">1925 安心專線</a> |
+      <a href="tel:1957">1957 福利諮詢</a>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY -->
+<div class="privacy">
+  <div class="privacy-box">
+    <span>&#128274;</span>
+    <span>不收集個人資料、不需註冊、搜尋在你的裝置上完成，完全匿名。</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('browse')">&#128218; 瀏覽團體</button>
+  <button class="tab" onclick="switchTab('quest')">&#128172; 需求推薦</button>
+  <button class="tab" onclick="switchTab('hotlines')">&#128222; 緊急電話</button>
+</div>
+
+<!-- ===== PAGE: BROWSE ===== -->
+<div class="page active" id="page-browse">
+  <div class="filters-wrap">
+    <div class="filter-scroll" id="catFilters"></div>
+    <div class="filter-row">
+      <select class="city-sel" id="citySelect"><option value="">全部地區</option></select>
+      <select class="sort-sel" id="sortSelect" onchange="curSort=this.value;applyFilters()">
+        <option value="heat">排序：熱門度 高→低</option>
+        <option value="data_complete">排序：資料完整度 高→低</option>
+        <option value="active">排序：活躍度 高→低</option>
+        <option value="assets_desc">排序：資本額 高→低</option>
+      </select>
+      <div class="result-count" id="resultCount"></div>
+    </div>
+  </div>
+  <div class="cards-wrap" id="cardList"></div>
+</div>
+
+<!-- ===== PAGE: QUESTIONNAIRE ===== -->
+<div class="page" id="page-quest">
+  <div class="q-wrap">
+    <div class="q-card" id="qCard"></div>
+    <div class="q-progress" id="qProgress"></div>
+  </div>
+  <div class="rec-header" id="recHeader" style="display:none"></div>
+  <div class="cards-wrap" id="recCards" style="display:none"></div>
+</div>
+
+<!-- ===== PAGE: HOTLINES ===== -->
+<div class="page" id="page-hotlines">
+  <div class="q-wrap">
+    <div class="q-card" style="padding:20px">
+      <h2 style="margin-bottom:12px">&#128680; 緊急求助電話</h2>
+      <p style="font-size:13px;color:var(--g500);margin-bottom:16px">如果你或身邊的人正處於危險中，請立即撥打以下電話：</p>
+      <div id="hotlineList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CART FLOAT -->
+<div class="fav-count" id="favFloat" onclick="showFavPanel()">
+  我的清單 <span id="favNum">0</span> &nbsp;&#8594; 查看
+</div>
+
+<!-- CART PANEL -->
+<div class="fav-panel" id="favPanel" onclick="if(event.target===this)closeFavPanel()">
+  <div class="fav-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>&#128203; 我的機構清單</h2>
+      <button class="cart-remove" onclick="closeFavPanel()" style="font-size:20px">&#10005;</button>
+    </div>
+    <div class="cart-subtitle">勾選想聯繫的機構，匯出清單給自己</div>
+    <div id="likeList"></div>
+    <div id="favList"></div>
+    <div id="cartActions"></div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<div class="footer" style="padding-bottom:80px">
+  找幫助 &mdash; 台灣公益團體媒合平台<br>
+  資料來源：司法院法人登記、政府開放資料平台<br>
+  由心轉基金會發起，不收取任何費用<br>
+  本平台僅提供資訊參考，不代表對任何團體之背書或推薦
+</div>
+
+<script>
+// ===== STATE =====
+let DATA = [];
+let filtered = [];
+let showN = 20;
+let curCat = '';
+let curCity = '';
+let curSearch = '';
+let curSort = 'heat';
+let favs = JSON.parse(localStorage.getItem('fav_orgs') || '[]');
+let likes = JSON.parse(localStorage.getItem('like_orgs') || '[]');
+
+// ===== CATEGORY META =====
+const CM = {
+  '經濟扶助':       { i:'&#128176;', c:'#dc2626' },
+  '心理健康':       { i:'&#128154;', c:'#7c3aed' },
+  '醫療與健康':     { i:'&#127973;', c:'#dc2626' },
+  '兒童與青少年':   { i:'&#128118;', c:'#f59e0b' },
+  '身心障礙':       { i:'&#9855;',  c:'#2563eb' },
+  '老人與長照':     { i:'&#128116;', c:'#059669' },
+  '就業與職訓':     { i:'&#128188;', c:'#8b5cf6' },
+  '教育與獎學金':   { i:'&#127891;', c:'#0891b2' },
+  '社區發展':       { i:'&#127968;', c:'#65a30d' },
+  '家暴與婦女保護': { i:'&#128587;', c:'#be185d' },
+  '綜合社會福利':   { i:'&#129309;', c:'#6366f1' },
+  '災害救助':       { i:'&#9888;',  c:'#ea580c' },
+  '法律扶助':       { i:'&#9878;',  c:'#4b5563' },
+  '原住民服務':     { i:'&#127757;', c:'#15803d' },
+  '住宅與遊民':     { i:'&#127969;', c:'#b45309' },
+  '新住民服務':     { i:'&#127760;', c:'#0d9488' },
+};
+
+// ===== HOTLINES =====
+const HOTLINES = [
+  { name: '警察局', num: '110', desc: '人身安全、犯罪', color: '#dc2626' },
+  { name: '消防局', num: '119', desc: '火災、急救', color: '#ea580c' },
+  { name: '家暴保護專線', num: '113', desc: '家暴、性侵、兒虐', color: '#be185d' },
+  { name: '安心專線', num: '1925', desc: '心理諮詢、自殺防治 (24hr)', color: '#7c3aed' },
+  { name: '福利諮詢專線', num: '1957', desc: '社會福利諮詢', color: '#2563eb' },
+  { name: '長照專線', num: '1966', desc: '長照服務諮詢', color: '#059669' },
+  { name: '法律扶助', num: '412-8518', desc: '法律諮詢服務', color: '#4b5563' },
+  { name: '生命線', num: '1995', desc: '情緒支持、危機處理', color: '#d97706' },
+  { name: '張老師專線', num: '1980', desc: '心理諮商輔導', color: '#0891b2' },
+  { name: '外籍勞工諮詢', num: '1955', desc: '多語言勞動諮詢', color: '#0d9488' },
+];
+
+// ===== QUESTIONNAIRE =====
+const QUESTIONS = [
+  {
+    step: '第 1 步，共 3 步',
+    q: '你目前遇到什麼困難？',
+    sub: '可以選擇多個',
+    multi: true,
+    opts: [
+      { l:'經濟困難', i:'&#128176;', cats:['經濟扶助'], d:'每年13萬戶' },
+      { l:'心理壓力大', i:'&#128154;', cats:['心理健康'], d:'65%不知資源' },
+      { l:'身心障礙', i:'&#9855;', cats:['身心障礙'], d:'120萬人' },
+      { l:'家暴/人身安全', i:'&#128680;', cats:['家暴與婦女保護'], d:'每年10萬件' },
+      { l:'長輩照顧', i:'&#128116;', cats:['老人與長照'], d:'49萬人需求' },
+      { l:'小孩需要幫助', i:'&#128118;', cats:['兒童與青少年'], d:'兒少保護' },
+      { l:'看不起醫生', i:'&#127973;', cats:['醫療與健康'], d:'醫療補助' },
+      { l:'找工作/學技術', i:'&#128188;', cats:['就業與職訓'], d:'職業訓練' },
+      { l:'沒地方住', i:'&#127969;', cats:['住宅與遊民'], d:'9千+街友' },
+      { l:'法律問題', i:'&#9878;', cats:['法律扶助'], d:'法律扶助' },
+      { l:'其他困難', i:'&#128172;', cats:['綜合社會福利'], d:'' },
+    ]
+  },
+  {
+    step: '第 2 步，共 3 步',
+    q: '你在哪個地區？',
+    sub: '幫你找附近的資源',
+    multi: false,
+    opts: [] // filled dynamically
+  },
+  {
+    step: '第 3 步，共 3 步',
+    q: '急迫程度？',
+    sub: '幫我們判斷優先順序',
+    multi: false,
+    opts: [
+      { l:'非常緊急（今天就需要）', i:'&#128680;', urgency: 3 },
+      { l:'有點急（這週內）', i:'&#9888;', urgency: 2 },
+      { l:'不急，先了解有什麼資源', i:'&#128218;', urgency: 1 },
+    ]
+  }
+];
+let qStep = 0;
+let qAns = { cats:[], city:'', urgency:1 };
+
+// ===== QUALITY FILTER =====
+// 平台定位：緊急救助服務（Emergency Help）
+// 只保留這些類別；其他類別（宗教、教育、就業、環保、動保、原住民、新住民、社區、社會服務、綜合、其他）移除
+const EMERGENCY_CATS = new Set([
+  '經濟扶助','心理健康','家暴與婦女保護','醫療與健康','身心障礙',
+  '兒童與青少年','老人與長照','住宅與遊民','法律扶助','災害救助'
+]);
+
+function shouldHide(o) {
+  // 1. Name-based: non-charity organizations (social clubs, ancestral, alumni)
+  const hideNames = ['祭祀','公業','宗祠','宗親會','同鄉會','校友會','同學會','互助會','祠堂','神明會','獅子會','扶輪社','青商會','同濟會','聯誼會'];
+  if (hideNames.some(w => o.n.includes(w))) return true;
+  // 2. Must have at least one contact method to be useful
+  const hasContact = o.phone || o.email || o.website || o.fb || o.line;
+  if (!hasContact) return true;
+  // 3. Must have at least one emergency category
+  if (!Array.isArray(o.c) || !o.c.some(c => EMERGENCY_CATS.has(c))) return true;
+  return false;
+}
+
+// ===== INIT =====
+let ORG_DETAILS = {};
+function findOrgDetail(name) {
+  for (const key in ORG_DETAILS) {
+    if (key === '_meta') continue;
+    const d = ORG_DETAILS[key];
+    const matches = d.match || [key];
+    if (matches.some(m => name.includes(m))) return d;
+  }
+  return null;
+}
+
+async function init() {
+  document.getElementById('cardList').innerHTML = '<div class="empty"><div class="ico">&#9203;</div><p>載入資料中...</p></div>';
+  try {
+    const r = await fetch('data.json');
+    DATA = await r.json();
+  } catch(e) {
+    document.getElementById('cardList').innerHTML = '<div class="empty"><div class="ico">&#9888;</div><p>資料載入失敗，請重新整理</p></div>';
+    return;
+  }
+  try {
+    const rd = await fetch('org_details.json');
+    ORG_DETAILS = await rd.json();
+  } catch(e) { ORG_DETAILS = {}; }
+  DATA = DATA.filter(o => !shouldHide(o));
+  buildFilters();
+  buildHotlines();
+  buildQuestCities();
+  setupSearch();
+  updateFavUI();
+  applyFilters();
+}
+
+// ===== FILTERS =====
+function buildFilters() {
+  const cc = {};
+  const cities = {};
+  DATA.forEach(o => {
+    o.c.forEach(c => { if (EMERGENCY_CATS.has(c)) cc[c] = (cc[c]||0) + 1; });
+    if (o.ct) cities[o.ct] = (cities[o.ct]||0) + 1;
+  });
+
+  const f = document.getElementById('catFilters');
+  f.innerHTML = `<button class="f-chip active" onclick="setCat('')">全部 <span class="cnt">${DATA.length}</span></button>`;
+  Object.entries(cc).sort((a,b)=>b[1]-a[1]).forEach(([cat,n]) => {
+    const m = CM[cat]||{i:''};
+    f.innerHTML += `<button class="f-chip" data-cat="${cat}" onclick="setCat('${cat}')">${m.i} ${cat} <span class="cnt">${n}</span></button>`;
+  });
+
+  const s = document.getElementById('citySelect');
+  Object.entries(cities).sort((a,b)=>b[1]-a[1]).forEach(([c,n]) => {
+    s.innerHTML += `<option value="${c}">${c} (${n})</option>`;
+  });
+  s.onchange = () => { curCity = s.value; showN = 20; applyFilters(); };
+}
+
+function setCat(c) {
+  curCat = c;
+  document.querySelectorAll('.f-chip').forEach(el => {
+    el.classList.toggle('active', c ? el.dataset.cat===c : !el.dataset.cat);
+  });
+  showN = 20;
+  applyFilters();
+}
+
+function setupSearch() {
+  let t;
+  const inp = document.getElementById('searchInput');
+  const clr = document.getElementById('searchClear');
+  inp.addEventListener('input', () => {
+    clearTimeout(t);
+    t = setTimeout(() => {
+      curSearch = inp.value.trim();
+      clr.classList.toggle('show', curSearch.length > 0);
+      showN = 20;
+
+      // Show emergency box for danger keywords
+      const danger = ['自殺','想死','不想活','被打','家暴','性侵','危險','緊急'];
+      document.getElementById('emergencyBox').classList.toggle('show', danger.some(w => curSearch.includes(w)));
+
+      applyFilters();
+    }, 250);
+  });
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('show');
+  document.getElementById('emergencyBox').classList.remove('show');
+  curSearch = '';
+  showN = 20;
+  applyFilters();
+}
+
+function applyFilters() {
+  filtered = DATA.filter(o => {
+    if (curCat && !o.c.includes(curCat)) return false;
+    if (curCity && o.ct !== curCity) return false;
+    if (curSearch) {
+      const q = curSearch.toLowerCase();
+      const t = (o.n + o.p + o.a + o.c.join(' ')).toLowerCase();
+      const words = q.split(/\s+/);
+      if (!words.every(w => t.includes(w))) return false;
+    }
+    return true;
+  });
+  sortData(filtered, curSort);
+  renderCards();
+  updateFilterCounts();
+}
+
+function updateFilterCounts() {
+  // Update category chip counts based on current city + search
+  const baseFiltered = DATA.filter(o => {
+    if (curCity && o.ct !== curCity) return false;
+    if (curSearch) {
+      const q = curSearch.toLowerCase();
+      const t = (o.n + o.p + o.a + o.c.join(' ')).toLowerCase();
+      const words = q.split(/\s+/);
+      if (!words.every(w => t.includes(w))) return false;
+    }
+    return true;
+  });
+  // Update "全部" chip count
+  document.querySelectorAll('.f-chip').forEach(el => {
+    const cat = el.dataset.cat;
+    if (!cat) {
+      el.querySelector('.cnt').textContent = baseFiltered.length;
+    } else {
+      const cnt = baseFiltered.filter(o => o.c.includes(cat)).length;
+      el.querySelector('.cnt').textContent = cnt;
+    }
+  });
+  // Update city dropdown counts based on current category + search
+  const cityFiltered = DATA.filter(o => {
+    if (curCat && !o.c.includes(curCat)) return false;
+    if (curSearch) {
+      const q = curSearch.toLowerCase();
+      const t = (o.n + o.p + o.a + o.c.join(' ')).toLowerCase();
+      const words = q.split(/\s+/);
+      if (!words.every(w => t.includes(w))) return false;
+    }
+    return true;
+  });
+  const cityCounts = {};
+  cityFiltered.forEach(o => { if (o.ct) cityCounts[o.ct] = (cityCounts[o.ct]||0) + 1; });
+  const sel = document.getElementById('citySelect');
+  Array.from(sel.options).forEach(opt => {
+    if (!opt.value) {
+      opt.textContent = `全部地區 (${cityFiltered.length})`;
+    } else {
+      const c = opt.value;
+      const n = cityCounts[c] || 0;
+      opt.textContent = `${c} (${n})`;
+    }
+  });
+}
+
+function sortData(arr, mode) {
+  // 同品牌只讓「最具代表性」的進前段，避免家扶 10 個分會擠在前 10
+  const brandPenalty = new Map(); // brand key -> seen count
+  const getBrandKey = o => {
+    const d = findOrgDetail(o.n);
+    if (d) { for (const k in ORG_DETAILS) { if (ORG_DETAILS[k] === d) return k; } }
+    return null;
+  };
+  const score = o => {
+    let base;
+    switch(mode) {
+      case 'heat': base = heatScore(o); break;
+      case 'data_complete': base = dataCompleteScore(o); break;
+      case 'active': base = activeScore(o); break;
+      case 'assets_desc': base = parseInt(o.as)||0; break;
+      default: base = heatScore(o);
+    }
+    return base;
+  };
+  // 先算每個品牌內最高分的那一個代表
+  const bestPerBrand = new Map();
+  arr.forEach(o => {
+    const k = getBrandKey(o);
+    if (!k) return;
+    const s = score(o);
+    if (!bestPerBrand.has(k) || bestPerBrand.get(k).s < s) bestPerBrand.set(k, {o, s});
+  });
+  // 排序時，非代表的分會降分
+  arr.sort((a,b) => {
+    const ka = getBrandKey(a), kb = getBrandKey(b);
+    let sa = score(a), sb = score(b);
+    if (ka && bestPerBrand.get(ka).o !== a) sa -= 800; // 非代表分會降分
+    if (kb && bestPerBrand.get(kb).o !== b) sb -= 800;
+    return sb - sa;
+  });
+}
+
+// ===== SISTER BRANCH RENDERING =====
+function renderSisterList(containerId, items) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (items.length === 0) { el.innerHTML = '<p style="font-size:13px;color:#64748b">此區域尚無登記分會</p>'; return; }
+  el.innerHTML = items.map(s => {
+    const idx = DATA.indexOf(s);
+    const eAddr = encodeURIComponent(s.a||'');
+    return `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px">
+      <div style="font-weight:600;font-size:14px;margin-bottom:4px">${s.n}</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:6px">${s.ct||''} ${s.a ? '· '+s.a : ''}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${s.phone ? `<a href="tel:${s.phone}" style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:6px;font-size:12px;text-decoration:none">📞 ${s.phone}</a>` : ''}
+        ${s.a ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${eAddr}" target="_blank" style="background:#dbeafe;color:#1e40af;padding:4px 8px;border-radius:6px;font-size:12px;text-decoration:none">📍 導航</a>` : ''}
+        <button onclick="closeModal();openDetail(${idx})" style="background:#f1f5f9;color:#334155;padding:4px 8px;border-radius:6px;font-size:12px;border:none;cursor:pointer">📄 詳情</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showSister(containerId, dataAttr, city) {
+  const data = JSON.parse(decodeURIComponent(dataAttr));
+  const items = city ? (data[city] || []) : Object.values(data).flat();
+  renderSisterList(containerId, items);
+}
+
+// ===== RENDER CARDS =====
+function renderCards(container, data, max) {
+  const el = container || document.getElementById('cardList');
+  const d = data || filtered;
+  const n = max || showN;
+  const isMain = !container;
+
+  if (isMain) {
+    document.getElementById('resultCount').textContent = `共 ${d.length} 個團體`;
+  }
+
+  if (!d.length) {
+    el.innerHTML = '<div class="empty"><div class="ico">&#128533;</div><p>沒有符合條件的團體<br>試試其他篩選條件或關鍵字</p></div>';
+    return;
+  }
+
+  let h = '';
+  d.slice(0, n).forEach(o => h += cardHTML(o));
+
+  if (n < d.length && isMain) {
+    h += `<div class="load-more"><button class="load-btn" onclick="showN+=20;applyFilters()">載入更多（還有 ${d.length - n} 個）</button></div>`;
+  }
+  el.innerHTML = h;
+}
+
+function cardHTML(o) {
+  const emergencyCats = o.c.filter(c => EMERGENCY_CATS.has(c));
+  const tags = emergencyCats.slice(0,4).map(c => `<span class="tag">${(CM[c]||{}).i||''} ${c}</span>`).join('');
+  const isFav = favs.includes(o.n);
+  const eName = encodeURIComponent(o.n);
+  const eAddr = encodeURIComponent(o.a);
+  const desc = o.p.length > 100 ? o.p.slice(0,100) + '...' : o.p;
+
+  // Urgency tags
+  let urgTag = '';
+  if (o.phone) urgTag += '<span class="urgency-tag instant">&#128222; 可立即聯繫</span>';
+  const sosWords = ['急難救助','緊急安置','庇護','24小時','免費專線'];
+  if (sosWords.some(w => o.p.includes(w))) urgTag += '<span class="urgency-tag sos">&#127384; 急難服務</span>';
+
+  const isLiked = likes.includes(o.n);
+
+  const hasRichDetail = findOrgDetail(o.n) !== null;
+  const featuredBadge = hasRichDetail ? '<span class="urgency-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d">&#10024; 精選</span>' : '';
+
+  return `<div class="card">
+    <div class="card-top">
+      <div class="card-name">${o.n}</div>
+      <div class="card-top-actions">
+        <button class="fav-btn" onclick="event.stopPropagation();toggleFav('${o.n.replace(/'/g,'&#39;')}')" title="${isFav?'移出清單':'加入清單'}">${isFav ? '&#9989;' : '&#10133;'}</button>
+        <button class="fav-btn" onclick="event.stopPropagation();toggleLike('${o.n.replace(/'/g,'&#39;')}')" title="${isLiked?'取消最愛':'加入最愛'}" style="color:${isLiked?'#f59e0b':'var(--g300)'}">${isLiked ? '&#9733;' : '&#9734;'}</button>
+      </div>
+    </div>
+    <div class="card-tags">${tags}${featuredBadge}${urgTag}${emergencyCats.length>4?`<span class="tag">+${emergencyCats.length-4}</span>`:''}</div>
+    <div class="card-desc">${desc}</div>
+    <div class="card-meta">
+      ${o.ct ? `<div class="meta-item">&#128205; ${o.ct}</div>` : ''}
+      ${o.phone ? `<div class="meta-item">&#128222; ${o.phone}</div>` : ''}
+      ${o.as ? `<div class="meta-item">&#128176; ${(o.as/10000).toFixed(0)}萬</div>` : ''}
+    </div>
+    <div class="card-actions" onclick="event.stopPropagation()">
+      <button class="card-act pri" onclick="openDetail(${DATA.indexOf(o)})">&#128196; 詳情</button>
+      <div class="contact-wrap">
+        <button class="card-act grn" onclick="toggleContactMenu(this)" style="width:100%">&#128222; 聯繫方式 &#9660;</button>
+        <div class="contact-menu">
+          ${o.phone ? `<a class="cm-phone" href="tel:${o.phone}">&#128222; 撥打電話 ${o.phone}</a>` : ''}
+          ${o.line ? `<a class="cm-line" href="${o.line.startsWith('http')?o.line:'https://line.me/R/ti/p/'+o.line}" target="_blank">&#128172; LINE</a>` : ''}
+          ${o.fb ? `<a class="cm-fb" href="${o.fb}" target="_blank">&#128101; Facebook 粉專</a>` : ''}
+          ${o.email ? `<a class="cm-email" href="mailto:${o.email}">&#128231; Email ${o.email}</a>` : ''}
+          ${!o.phone && !o.line && !o.fb && !o.email ? `<a class="cm-none" href="https://www.google.com/search?q=${eName}+電話+聯絡" target="_blank">&#128269; 搜尋聯絡方式</a>` : ''}
+        </div>
+      </div>
+      <a class="card-act" href="https://www.google.com/maps/dir/?api=1&destination=${eAddr}" target="_blank" rel="noopener">&#128205; 導航</a>
+    </div>
+  </div>`;
+}
+
+// ===== DETAIL MODAL =====
+function openDetail(idx) {
+  const o = DATA[idx];
+  if (!o) return;
+  const tags = o.c.filter(c => EMERGENCY_CATS.has(c)).map(c => `<span class="tag">${(CM[c]||{}).i||''} ${c}</span>`).join(' ');
+  const eName = encodeURIComponent(o.n);
+  const eAddr = encodeURIComponent(o.a);
+  const isFav = favs.includes(o.n);
+  const lineMsg = encodeURIComponent(`推薦一個公益資源：${o.n}\n地址：${o.a}\n宗旨：${o.p.slice(0,80)}...\n\n透過「找幫助」平台查詢更多公益團體`);
+
+  // Parse purpose text into bullet list
+  const purposeList = parsePurpose(o.p);
+  const detail = findOrgDetail(o.n);
+
+  // Find sister branches: other DATA entries matching same detail pattern
+  let branchBlock = '';
+  if (detail) {
+    const matches = detail.match || [];
+    const sisters = DATA.filter(x => x !== o && matches.some(m => x.n.includes(m)));
+    const hasBranchLookup = detail.branchLookupUrl;
+    if (sisters.length > 0 || hasBranchLookup) {
+      const byCity = {};
+      sisters.forEach(s => { const c = s.ct || '其他'; (byCity[c] = byCity[c] || []).push(s); });
+      const cities = Object.keys(byCity).sort();
+      const opts = cities.map(c => `<option value="${c}">${c} (${byCity[c].length})</option>`).join('');
+      const sisterListId = 'sisterList_' + idx;
+      const cityDataAttr = encodeURIComponent(JSON.stringify(byCity));
+      branchBlock = `
+    <div class="m-section" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px">
+      <h3 style="margin-top:0">&#127968; 分會／分支機構</h3>
+      ${hasBranchLookup ? `<p style="margin:4px 0 10px"><a href="${detail.branchLookupUrl}" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none">&#128279; ${detail.branchLookupText || '查詢官方分會列表'} &rarr;</a></p>` : ''}
+      ${sisters.length > 0 ? `
+        <div style="margin-bottom:8px">
+          <label style="font-size:13px;color:#475569;margin-right:6px">選擇地區：</label>
+          <select onchange="showSister('${sisterListId}','${cityDataAttr}',this.value)" class="sort-sel" style="padding:6px 10px">
+            <option value="">全部 (${sisters.length})</option>${opts}
+          </select>
+        </div>
+        <div id="${sisterListId}" style="display:grid;gap:8px"></div>
+      ` : '<p style="font-size:13px;color:#64748b;margin:4px 0">本機構僅登記 1 個據點，其他分會請參考官方網站。</p>'}
+    </div>`;
+    }
+  }
+
+  let richContent = '';
+  if (detail) {
+    const svcList = (detail.services||[]).map(s => `<li>${s}</li>`).join('');
+    const hlList = (detail.highlights||[]).map(h => `<span class="tag" style="background:#fef3c7;color:#92400e">&#9733; ${h}</span>`).join(' ');
+    richContent = `
+    <div class="m-section" style="background:linear-gradient(135deg,#f0fdf4,#ecfeff);border:1px solid #86efac;border-radius:12px;padding:14px;margin-bottom:12px">
+      <div style="font-size:11px;color:#059669;font-weight:700;margin-bottom:6px">&#10024; 精選團體 — 平台整理詳細資訊</div>
+      ${detail.intro ? `<p style="margin:0 0 10px;line-height:1.7">${detail.intro}</p>` : ''}
+      ${hlList ? `<div style="margin-bottom:8px">${hlList}</div>` : ''}
+    </div>
+    <div class="m-section">
+      <h3>&#127775; 服務項目</h3>
+      <ul class="m-list">${svcList}</ul>
+    </div>
+    ${detail.eligibility ? `<div class="m-section"><h3>&#128100; 服務對象 / 申請資格</h3><p style="line-height:1.7">${detail.eligibility}</p></div>` : ''}
+    ${detail.howToApply ? `<div class="m-section"><h3>&#128221; 如何申請求助</h3><p style="line-height:1.7;background:#fef9c3;padding:10px;border-radius:8px;border-left:3px solid #eab308">${detail.howToApply}</p></div>` : ''}
+    <div class="m-section">
+      <h3>&#128203; 政府登記宗旨</h3>
+      ${purposeList}
+    </div>`;
+  } else {
+    richContent = `
+    <div class="m-section">
+      <h3>&#128203; 服務內容</h3>
+      ${purposeList}
+    </div>`;
+  }
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+      <div class="modal-badge">${o.t==='財團'?'財團法人':'社團法人'}</div>
+      <h2 style="padding-right:80px">${o.n}</h2>
+      <div style="position:absolute;right:56px;top:16px;display:flex;gap:2px">
+        <button class="fav-btn" onclick="toggleFav('${o.n.replace(/'/g,'&#39;')}');openDetail(${idx})" title="${isFav?'移出清單':'加入清單'}">${isFav ? '&#9989;' : '&#10133;'}</button>
+        <button class="fav-btn" onclick="toggleLike('${o.n.replace(/'/g,'&#39;')}');openDetail(${idx})" title="${likes.includes(o.n)?'取消最愛':'加入最愛'}" style="color:${likes.includes(o.n)?'#f59e0b':'var(--g300)'}">${likes.includes(o.n)?'&#9733;':'&#9734;'}</button>
+      </div>
+      <div class="modal-tags">${tags}</div>
+    </div>
+
+    ${richContent}
+
+    ${branchBlock}
+
+    <div class="m-section">
+      <h3>&#128222; 聯絡資訊</h3>
+      <ul class="m-list">
+        ${o.phone ? `<li><a href="tel:${o.phone}">&#128222; ${o.phone}</a></li>` : ''}
+        ${o.email ? `<li><a href="mailto:${o.email}">&#128231; ${o.email}</a></li>` : ''}
+        ${o.website ? `<li><a href="${o.website}" target="_blank">&#127760; ${o.website}</a></li>` : ''}
+        ${o.fb ? `<li><a href="${o.fb}" target="_blank">&#128101; Facebook 粉專</a></li>` : ''}
+        ${o.line ? `<li>LINE：${o.line}</li>` : ''}
+        ${!o.phone && !o.email && !o.website ? `<li style="color:var(--g500)">尚無登記聯絡方式 — 請點下方「搜尋聯絡方式」查找</li>` : ''}
+      </ul>
+    </div>
+
+    <div class="m-section">
+      <h3>&#128205; 地址</h3>
+      ${o.a ? `<p><a href="https://www.google.com/maps/dir/?api=1&destination=${eAddr}" target="_blank" style="color:var(--pri);text-decoration:none">${o.a} &#128279;</a></p>` : '<p>未提供</p>'}
+    </div>
+
+    <div class="m-section">
+      <h3>&#128202; 基本資料</h3>
+      <ul class="m-list">
+        ${o.r ? `<li>&#128100; 負責人：${o.r}</li>` : ''}
+        ${o.au ? `<li>&#127963; 主管機關：${o.au}</li>` : ''}
+        ${o.as ? `<li>&#128176; 登記資產：NT$ ${o.as.toLocaleString()}</li>` : ''}
+      </ul>
+    </div>
+
+    <div style="margin:16px 0">
+      <button class="cart-btn ${isFav?'':'pri'}" onclick="toggleFav('${o.n.replace(/'/g,'&#39;')}');openDetail(${idx})" style="width:100%;padding:14px;font-size:15px">
+        ${isFav ? '&#9989; 已加入清單（點擊移除）' : '&#10133; 加入我的清單'}
+      </button>
+    </div>
+
+    <div class="m-actions">
+      ${o.phone ? `<a class="m-act" style="background:#dcfce7;color:#166534" href="tel:${o.phone}">&#128222; 撥打 ${o.phone}</a>` : ''}
+      <a class="m-act search" href="https://www.google.com/search?q=${eName}+電話+聯絡+官網" target="_blank">&#128269; 搜尋聯絡方式</a>
+      <a class="m-act map" href="https://www.google.com/maps/dir/?api=1&destination=${eAddr}" target="_blank">&#128205; 地圖導航</a>
+      <a class="m-act line" href="https://social-plugins.line.me/lineit/share?url=&text=${lineMsg}" target="_blank">&#128172; LINE 分享</a>
+      <button class="m-act share" onclick="shareOrg(\`${o.n.replace(/`/g,'')}\`,\`${o.a.replace(/`/g,'')}\`)">&#128279; 複製分享</button>
+      <a class="m-act fb" href="https://www.facebook.com/search/top?q=${eName}" target="_blank">&#102; Facebook</a>
+    </div>
+
+    <div class="m-warn">
+      <b>提醒：</b>以上資料來自政府公開登記，僅供參考。建議透過聯絡方式直接聯繫確認。
+      <div class="hotline-grid">
+        <a class="hotline" href="tel:113"><span>&#128680;</span> 家暴保護 <strong>113</strong></a>
+        <a class="hotline" href="tel:1925"><span>&#128154;</span> 安心專線 <strong>1925</strong></a>
+        <a class="hotline" href="tel:1957"><span>&#128222;</span> 福利諮詢 <strong>1957</strong></a>
+        <a class="hotline" href="tel:1966"><span>&#128116;</span> 長照專線 <strong>1966</strong></a>
+      </div>
+    </div>
+  `;
+  document.getElementById('overlay').classList.add('show');
+
+  // After innerHTML set, render sister branch list (script tags inside innerHTML don't execute)
+  if (detail) {
+    const matches = detail.match || [];
+    const sisters = DATA.filter(x => x !== o && matches.some(m => x.n.includes(m)));
+    if (sisters.length > 0) {
+      renderSisterList('sisterList_' + idx, sisters);
+    }
+  }
+}
+
+function parsePurpose(text) {
+  if (!text) return '<p>未提供</p>';
+  // Try splitting by Chinese numbering: 一、二、三、...
+  let items = text.split(/[一二三四五六七八九十]+、/).filter(s => s.trim());
+  if (items.length >= 3) return '<ul class="m-list">' + items.map(s => `<li>${s.trim().replace(/。$/, '')}</li>`).join('') + '</ul>';
+  // Try splitting by numbered lists: 1. 2. 3. or 1、2、3、
+  items = text.split(/\d+[、.．]\s*/).filter(s => s.trim());
+  if (items.length >= 3) return '<ul class="m-list">' + items.map(s => `<li>${s.trim().replace(/。$/, '')}</li>`).join('') + '</ul>';
+  // Try splitting by period-separated sentences
+  items = text.split(/。/).filter(s => s.trim().length > 4);
+  if (items.length >= 2) return '<ul class="m-list">' + items.map(s => `<li>${s.trim()}</li>`).join('') + '</ul>';
+  return `<p>${text}</p>`;
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ===== CONTACT MENU =====
+function toggleContactMenu(btn) {
+  // Close all other menus first
+  document.querySelectorAll('.contact-menu.show').forEach(m => {
+    if (m !== btn.nextElementSibling) m.classList.remove('show');
+  });
+  const menu = btn.nextElementSibling;
+  menu.classList.toggle('show');
+}
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.contact-wrap')) {
+    document.querySelectorAll('.contact-menu.show').forEach(m => m.classList.remove('show'));
+  }
+});
+
+function shareOrg(name, addr) {
+  const txt = `推薦一個公益資源：${name}\n地址：${addr}\n\n透過「找幫助」平台查詢更多公益團體`;
+  if (navigator.share) {
+    navigator.share({ title: '找幫助 - 公益資源', text: txt });
+  } else {
+    navigator.clipboard.writeText(txt).then(() => alert('已複製到剪貼簿！'));
+  }
+}
+
+// ===== FAVORITES =====
+function toggleFav(name) {
+  const i = favs.indexOf(name);
+  if (i >= 0) favs.splice(i, 1);
+  else favs.push(name);
+  localStorage.setItem('fav_orgs', JSON.stringify(favs));
+  updateFavUI();
+  applyFilters(); // re-render cards
+}
+
+function toggleLike(name) {
+  const i = likes.indexOf(name);
+  if (i >= 0) likes.splice(i, 1);
+  else likes.push(name);
+  localStorage.setItem('like_orgs', JSON.stringify(likes));
+  applyFilters();
+}
+
+function updateFavUI() {
+  const el = document.getElementById('favFloat');
+  const total = favs.length + likes.length;
+  let txt = '';
+  if (favs.length) txt += `&#128203;${favs.length}`;
+  if (favs.length && likes.length) txt += ' ';
+  if (likes.length) txt += `&#9733;${likes.length}`;
+  document.getElementById('favNum').innerHTML = txt;
+  el.classList.toggle('show', total > 0);
+}
+
+
+function showFavPanel() {
+  const likeList = document.getElementById('likeList');
+  const list = document.getElementById('favList');
+  const actions = document.getElementById('cartActions');
+  const favOrgs = DATA.filter(o => favs.includes(o.n));
+  const likeOrgs = DATA.filter(o => likes.includes(o.n));
+
+  // Render likes section
+  if (likeOrgs.length) {
+    likeList.innerHTML = `<div style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;color:#f59e0b;margin-bottom:8px">&#9733; 最愛（${likeOrgs.length}）</div>
+      ${likeOrgs.map(o => {
+        const contact = o.phone ? `&#128222; ${o.phone}` :
+                        o.website ? `&#127760; ${o.website}` :
+                        o.email ? `&#128231; ${o.email}` : '尚無聯絡方式';
+        const inCart = favs.includes(o.n);
+        return `<div class="cart-item" style="border-left:3px solid #f59e0b">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${o.n}</div>
+            <div class="cart-item-meta">${o.ct||''} ${o.c.slice(0,2).join(' ')}</div>
+            <div class="cart-item-contact">${contact}</div>
+          </div>
+          <div style="display:flex;gap:4px;align-items:center">
+            ${!inCart ? `<button class="fav-btn" onclick="toggleFav('${o.n.replace(/'/g,'&#39;')}');showFavPanel()" title="也加入清單" style="font-size:16px">&#10133;</button>` : '<span style="font-size:14px" title="已在清單中">&#9989;</span>'}
+            <button class="cart-remove" onclick="toggleLike('${o.n.replace(/'/g,'&#39;')}');showFavPanel()" title="取消最愛">&#10005;</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  } else {
+    likeList.innerHTML = '';
+  }
+
+  // Render cart list
+  if (favOrgs.length) {
+    list.innerHTML = `<div style="font-size:13px;font-weight:600;color:var(--pri);margin-bottom:8px">&#128203; 聯繫清單（${favOrgs.length}）</div>` +
+      favOrgs.map(o => {
+      const contact = o.phone ? `&#128222; ${o.phone}` :
+                      o.website ? `&#127760; ${o.website}` :
+                      o.email ? `&#128231; ${o.email}` : '尚無聯絡方式';
+      return `<div class="cart-item">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${o.n}</div>
+          <div class="cart-item-meta">${o.ct||''} ${o.c.slice(0,2).join(' ')}</div>
+          <div class="cart-item-contact">${contact}</div>
+        </div>
+        <button class="cart-remove" onclick="toggleFav('${o.n.replace(/'/g,'&#39;')}');showFavPanel()" title="移除">&#128465;</button>
+      </div>`;
+    }).join('');
+
+    actions.innerHTML = `
+      <div class="cart-actions">
+        <div class="cart-actions-title">&#128228; 匯出清單給自己</div>
+        <div class="cart-export-row">
+          <button class="cart-btn pri" onclick="exportCopy()">&#128203; 複製到剪貼簿</button>
+          <button class="cart-btn line-btn" onclick="exportLINE()">&#128172; LINE 傳給自己</button>
+        </div>
+        <div class="cart-export-row">
+          <button class="cart-btn" onclick="exportEmail()">&#128231; Email 給自己</button>
+          <button class="cart-btn" onclick="exportDownload()">&#128196; 下載文字檔</button>
+        </div>
+        <button class="cart-clear" onclick="if(confirm('確定清空清單？')){favs=[];localStorage.setItem('fav_orgs','[]');updateFavUI();showFavPanel();applyFilters();}">&#128465; 清空清單</button>
+      </div>`;
+  } else if (!likeOrgs.length) {
+    list.innerHTML = '<div class="empty"><div class="ico">&#128203;</div><p>還沒有加入任何機構<br>&#10133; 加入清單 &nbsp; &#9734; 加入最愛</p></div>';
+    actions.innerHTML = '';
+  } else {
+    list.innerHTML = '';
+    actions.innerHTML = '';
+  }
+
+  document.getElementById('favPanel').classList.add('show');
+}
+
+function buildExportText() {
+  const favOrgs = DATA.filter(o => favs.includes(o.n));
+  let txt = '【找幫助 — 你的機構清單】\n';
+  txt += `匯出時間：${new Date().toLocaleDateString('zh-TW')}\n\n`;
+  favOrgs.forEach((o, i) => {
+    txt += `${i+1}. ${o.n}\n`;
+    if (o.phone) txt += `   &#128222; 電話：${o.phone}\n`;
+    if (o.email) txt += `   &#128231; Email：${o.email}\n`;
+    if (o.website) txt += `   &#127760; 網站：${o.website}\n`;
+    if (o.fb) txt += `   &#128101; Facebook：${o.fb}\n`;
+    if (o.a) txt += `   &#128205; 地址：${o.a}\n`;
+    txt += `   服務：${o.c.join('、')}\n`;
+    if (!o.phone && !o.website) txt += `   &#128269; 搜尋聯絡方式：https://www.google.com/search?q=${encodeURIComponent(o.n+' 電話 聯絡')}\n`;
+    txt += '\n';
+  });
+  txt += '---\n透過「找幫助」平台查詢更多公益團體';
+  return txt;
+}
+
+function buildExportPlain() {
+  // Plain text without HTML entities
+  const favOrgs = DATA.filter(o => favs.includes(o.n));
+  let txt = '【找幫助 — 你的機構清單】\n';
+  txt += `匯出時間：${new Date().toLocaleDateString('zh-TW')}\n\n`;
+  favOrgs.forEach((o, i) => {
+    txt += `${i+1}. ${o.n}\n`;
+    if (o.phone) txt += `   電話：${o.phone}\n`;
+    if (o.email) txt += `   Email：${o.email}\n`;
+    if (o.website) txt += `   網站：${o.website}\n`;
+    if (o.fb) txt += `   Facebook：${o.fb}\n`;
+    if (o.a) txt += `   地址：${o.a}\n`;
+    txt += `   服務：${o.c.join('、')}\n`;
+    if (!o.phone && !o.website) txt += `   搜尋聯絡方式：https://www.google.com/search?q=${encodeURIComponent(o.n+' 電話 聯絡')}\n`;
+    txt += '\n';
+  });
+  txt += '---\n透過「找幫助」平台查詢更多公益團體';
+  return txt;
+}
+
+function exportCopy() {
+  const txt = buildExportPlain();
+  navigator.clipboard.writeText(txt).then(() => {
+    alert(`已複製 ${favs.length} 個機構的資訊到剪貼簿！\n\n你可以貼到 LINE、備忘錄或任何地方。`);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert(`已複製 ${favs.length} 個機構的資訊到剪貼簿！`);
+  });
+}
+
+function exportLINE() {
+  const txt = buildExportPlain();
+  const encoded = encodeURIComponent(txt);
+  window.open(`https://social-plugins.line.me/lineit/share?url=&text=${encoded}`, '_blank');
+}
+
+function exportEmail() {
+  const txt = buildExportPlain();
+  const subject = encodeURIComponent('找幫助 — 我的機構清單');
+  const body = encodeURIComponent(txt);
+  window.open(`mailto:?subject=${subject}&body=${body}`);
+}
+
+function exportDownload() {
+  const txt = buildExportPlain();
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `找幫助_機構清單_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function closeFavPanel() {
+  document.getElementById('favPanel').classList.remove('show');
+}
+
+// ===== TABS =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', (tab==='browse'&&i===0)||(tab==='quest'&&i===1)||(tab==='hotlines'&&i===2));
+  });
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+
+  // Hide questionnaire nav when not on quest tab
+
+  // Hide search/privacy on quest & hotlines tabs to save space
+  const isQuest = tab === 'quest' || tab === 'hotlines';
+  document.querySelector('.search-wrap').style.display = isQuest ? 'none' : '';
+  document.querySelector('.privacy').style.display = isQuest ? 'none' : '';
+  document.querySelector('.header').style.display = isQuest ? 'none' : '';
+  window.scrollTo(0, 0);
+
+  if (tab === 'quest') {
+    qStep = 0;
+    qAns = { cats:[], city:'', urgency:1 };
+    document.getElementById('recHeader').style.display = 'none';
+    document.getElementById('recCards').style.display = 'none';
+    renderQ();
+  }
+}
+
+// ===== QUESTIONNAIRE =====
+function buildQuestCities() {
+  const cities = {};
+  DATA.forEach(o => { if(o.ct) cities[o.ct] = (cities[o.ct]||0)+1; });
+  QUESTIONS[1].opts = [{ l:'不限地區', i:'&#127757;', city:'' }];
+  Object.entries(cities).sort((a,b)=>b[1]-a[1]).forEach(([c]) => {
+    QUESTIONS[1].opts.push({ l:c, i:'&#128205;', city:c });
+  });
+}
+
+function renderQ() {
+  const q = QUESTIONS[qStep];
+  const card = document.getElementById('qCard');
+  card.style.display = '';
+
+  let optsHtml = q.opts.map((o,i) => {
+    let sel = false;
+    if (qStep === 0) sel = o.cats ? o.cats.some(c => qAns.cats.includes(c)) : false;
+    else if (qStep === 1) sel = (qAns.city === (o.city !== undefined ? o.city : ''));
+    const demandTag = o.d ? `<span style="font-size:10px;color:var(--g400);display:block;margin-top:1px">${o.d}</span>` : '';
+    return `<button class="q-opt${sel?' sel':''}" onclick="qSelect(${i},this)" data-i="${i}">
+      <span class="ico">${o.i}</span><div>${o.l}${demandTag}</div>
+    </button>`;
+  }).join('');
+
+  // Build step summary - only show completed steps
+  let summaryHtml = '';
+  if (qStep > 0) {
+    const completed = [];
+    if (qAns.cats.length) completed.push(`<div class="q-summary-item"><div class="q-summary-step done">&#10003;</div><div><span class="q-summary-label">困難類型：</span><span class="q-summary-value">${qAns.cats.map(c=>(CM[c]||{}).i+c).join(' ')}</span></div></div>`);
+    if (qStep > 1) completed.push(`<div class="q-summary-item"><div class="q-summary-step done">&#10003;</div><div><span class="q-summary-label">地區：</span><span class="q-summary-value">${qAns.city||'不限'}</span></div></div>`);
+    summaryHtml = `<div class="q-summary">${completed.join('')}</div><div style="border-top:1px solid var(--g200);margin:10px 0"></div>`;
+  }
+
+  card.innerHTML = `
+    ${summaryHtml}
+    <div class="q-top-nav">
+      <button class="q-nav-btn" onclick="qBack()" ${qStep===0?'disabled':''}>&#8592; 上一步</button>
+      <div class="q-step">${q.step}</div>
+      <button class="q-nav-btn primary" onclick="qNext()">${qStep===2?'查看推薦 &#10004;':'下一步：'+(qStep===0?'選地區':'急迫度')+' &#8594;'}</button>
+    </div>
+    <h2>${q.q}</h2>
+    <div class="q-sub">${q.sub}</div>
+    <div class="q-card-body">
+      <div class="q-opts">${optsHtml}</div>
+    </div>
+    <div class="q-hint" id="qHint"></div>
+  `;
+
+  // Progress dots
+  const prog = document.getElementById('qProgress');
+  prog.innerHTML = QUESTIONS.map((_,i) =>
+    `<div class="q-dot ${i<qStep?'done':i===qStep?'current':''}"></div>`
+  ).join('');
+}
+
+function qSelect(idx, btn) {
+  const q = QUESTIONS[qStep];
+  if (qStep === 0) {
+    // Multi-select
+    btn.classList.toggle('sel');
+    const cats = q.opts[idx].cats;
+    cats.forEach(c => {
+      const i = qAns.cats.indexOf(c);
+      if (btn.classList.contains('sel') && i < 0) qAns.cats.push(c);
+      else if (!btn.classList.contains('sel') && i >= 0) qAns.cats.splice(i, 1);
+    });
+  } else if (qStep === 1) {
+    document.querySelectorAll('#qCard .q-opt').forEach(el => el.classList.remove('sel'));
+    btn.classList.add('sel');
+    qAns.city = q.opts[idx].city !== undefined ? q.opts[idx].city : '';
+  } else if (qStep === 2) {
+    document.querySelectorAll('#qCard .q-opt').forEach(el => el.classList.remove('sel'));
+    btn.classList.add('sel');
+    qAns.urgency = q.opts[idx].urgency || 1;
+  }
+}
+
+function qNext() {
+  const hint = document.getElementById('qHint');
+  if (qStep === 0 && qAns.cats.length === 0) {
+    if (hint) { hint.classList.add('show'); hint.innerHTML = '&#9888; 請先點選至少一個困難類型'; }
+    // Also make options flash
+    document.querySelectorAll('#qCard .q-opt').forEach(el => {
+      el.style.transition = 'border-color .15s';
+      el.style.borderColor = '#fca5a5';
+      setTimeout(() => el.style.borderColor = '', 800);
+    });
+    return;
+  }
+  if (hint) hint.classList.remove('show');
+  if (qStep < 2) {
+    qStep++;
+    renderQ();
+  } else {
+    showRecommendations();
+  }
+}
+
+function qBack() {
+  if (qStep > 0) { qStep--; renderQ(); }
+}
+
+function showRecommendations() {
+  // Filter and score
+  let results = DATA.filter(o => {
+    if (qAns.cats.length && !o.c.some(c => qAns.cats.includes(c))) return false;
+    if (qAns.city && o.ct !== qAns.city) return false;
+    return true;
+  });
+
+  // Score by match quality
+  results.forEach(o => {
+    o._matchScore = 0;
+    o._matchScore += o.c.filter(c => qAns.cats.includes(c)).length * 20;
+    // Bonus for action words in purpose
+    const actionWords = ['服務','輔導','諮詢','照顧','安置','庇護','陪伴','補助','救助','免費','專線'];
+    actionWords.forEach(w => { if (o.p.includes(w)) o._matchScore += 3; });
+    if (o.as && o.as >= 1000000) o._matchScore += 5;
+    if (o.au) o._matchScore += 3;
+  });
+
+  results.sort((a,b) => b._matchScore - a._matchScore);
+
+  // Show emergency box if high urgency + danger categories
+  const dangerCats = ['家暴與婦女保護', '心理健康', '住宅與遊民'];
+  if (qAns.urgency >= 3 && qAns.cats.some(c => dangerCats.includes(c))) {
+    document.getElementById('emergencyBox').classList.add('show');
+  }
+
+  // Render
+  document.getElementById('qCard').style.display = 'none';
+  document.getElementById('qProgress').innerHTML = '';
+
+  const rh = document.getElementById('recHeader');
+  rh.style.display = '';
+  // Store for re-sorting
+  window._recResults = results;
+
+  rh.innerHTML = `<div class="rec-box">
+    <h3>&#10024; 為你找到 ${results.length} 個推薦團體</h3>
+    <p>根據你的需求：${qAns.cats.map(c=>(CM[c]||{}).i+' '+c).join('、')}${qAns.city?' | '+qAns.city:''}</p>
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+      <select class="sort-sel" onchange="resortRec(this.value)">
+        <option value="match">排序：符合需求度 高→低</option>
+        <option value="data_complete">排序：資料完整度 高→低</option>
+        <option value="active">排序：活躍度 高→低</option>
+      </select>
+      <button class="rec-reset" onclick="switchTab('quest')">&#8634; 重新選擇</button>
+    </div>
+  </div>`;
+
+  const rc = document.getElementById('recCards');
+  rc.style.display = '';
+  renderCards(rc, results, 30);
+}
+
+function dataCompleteScore(o) {
+  let s = 0;
+  // 服務說明詳細度（是否清楚說明做什麼服務）
+  const pLen = (o.p||'').length;
+  if (pLen > 200) s += 4;
+  else if (pLen > 100) s += 3;
+  else if (pLen > 50) s += 2;
+  else if (pLen > 0) s += 1;
+  // 聯繫資料完整度
+  if (o.phone) s += 3;
+  if (o.email) s += 2;
+  if (o.website) s += 3;
+  if (o.fb) s += 1;
+  if (o.line) s += 1;
+  // 服務分類是否多元
+  if (o.c && o.c.length > 2) s += 2;
+  else if (o.c && o.c.length > 1) s += 1;
+  // 是否有分會（名稱含「分會」「分事務所」「中心」等，或同名團體多筆）
+  const n = o.n||'';
+  if (n.includes('分會') || n.includes('分事務所') || n.includes('總會')) s += 2;
+  if (o.a) s += 1;
+  return s;
+}
+function activeScore(o) {
+  let s = 0;
+  // 有聯繫管道代表活躍
+  if (o.phone) s += 3;
+  if (o.website) s += 3;
+  if (o.fb) s += 2;
+  if (o.line) s += 2;
+  if (o.email) s += 2;
+  // 資本額大代表規模活躍
+  const assets = parseInt(o.as)||0;
+  if (assets > 100000000) s += 3;
+  else if (assets > 10000000) s += 2;
+  else if (assets > 1000000) s += 1;
+  // 服務多元
+  if (o.c && o.c.length > 2) s += 2;
+  else if (o.c && o.c.length > 1) s += 1;
+  // 宗旨描述豐富代表持續更新
+  if ((o.p||'').length > 100) s += 1;
+  return s;
+}
+
+// 搜尋熱度：綜合知名度、規模、聯絡管道、分會數
+function heatScore(o) {
+  let s = 0;
+  const detail = findOrgDetail(o.n);
+  // 精選團體（最知名）：大幅加分
+  if (detail) {
+    s += 1000;
+    // 分會數（同品牌在 DATA 中的分支數）
+    const matches = detail.match || [];
+    const branchCount = DATA.filter(x => matches.some(m => x.n.includes(m))).length;
+    s += branchCount * 10;
+  }
+  // 資本額（log 對數，避免極值主導）
+  const assets = parseInt(o.as)||0;
+  if (assets > 0) s += Math.log10(assets) * 10;
+  // 聯絡管道多寡（每多一個 +5）
+  if (o.phone) s += 5;
+  if (o.email) s += 5;
+  if (o.website) s += 5;
+  if (o.fb) s += 5;
+  if (o.line) s += 5;
+  // 服務說明豐富（顯示活躍）
+  if ((o.p||'').length > 100) s += 3;
+  return s;
+}
+
+function resortRec(mode) {
+  const r = window._recResults;
+  if (!r) return;
+  if (mode === 'match') {
+    r.sort((a,b) => b._matchScore - a._matchScore);
+  } else if (mode === 'data_complete') {
+    r.sort((a,b) => dataCompleteScore(b) - dataCompleteScore(a));
+  } else if (mode === 'active') {
+    r.sort((a,b) => activeScore(b) - activeScore(a));
+  } else {
+    sortData(r, mode);
+  }
+  renderCards(document.getElementById('recCards'), r, 30);
+}
+
+// ===== HOTLINES =====
+function buildHotlines() {
+  const el = document.getElementById('hotlineList');
+  el.innerHTML = HOTLINES.map(h => `
+    <a href="tel:${h.num}" class="hotline" style="margin-bottom:6px;padding:14px;background:${h.color}10;border:1px solid ${h.color}30">
+      <div>
+        <div style="font-weight:700;font-size:14px;color:${h.color}">${h.name}</div>
+        <div style="font-size:12px;color:var(--g500)">${h.desc}</div>
+      </div>
+      <strong style="margin-left:auto;font-size:18px;color:${h.color}">${h.num}</strong>
+    </a>
+  `).join('');
+}
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeFavPanel(); }
+});
+
+// ===== START =====
+init();
+</script>
+</body>
+</html>
